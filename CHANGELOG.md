@@ -3,6 +3,15 @@
 All notable changes to MCP-Scanner are documented here. The format is
 based on Keep a Changelog, and the project follows semantic versioning.
 
+## [0.1.1] - 2026-10-20
+
+### Changed
+
+- PyPI distribution renamed to `runtime-mcp-scanner`: PyPI rejected
+  `mcp-scanner` as too similar to an existing project. The GitHub
+  repository (MCP-Scanner), the `mcp-scan` command, and the `mcp_scan`
+  module are unchanged.
+
 ## [0.1.0] - 2026-10-19
 
 ### Added

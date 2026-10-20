@@ -3,8 +3,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "mcp-scanner"
-version = "0.1.0"
+name = "runtime-mcp-scanner"
+version = "0.1.1"
 description = "Security scanner for MCP (Model Context Protocol) servers: scan configs and source code for shell execution, unscoped file access, missing auth, exfiltration paths, and shady package provenance."
 readme = "README.md"
 requires-python = ">=3.10"

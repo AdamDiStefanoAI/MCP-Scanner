@@ -1,7 +1,7 @@
 # MCP-Scanner
 
-[![PyPI version](https://img.shields.io/pypi/v/mcp-scanner.svg)](https://pypi.org/project/mcp-scanner/)
-[![Python versions](https://img.shields.io/pypi/pyversions/mcp-scanner.svg)](https://pypi.org/project/mcp-scanner/)
+[![PyPI version](https://img.shields.io/pypi/v/runtime-mcp-scanner.svg)](https://pypi.org/project/runtime-mcp-scanner/)
+[![Python versions](https://img.shields.io/pypi/pyversions/runtime-mcp-scanner.svg)](https://pypi.org/project/runtime-mcp-scanner/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://github.com/AdamDiStefanoAI/mcp-scanner/actions/workflows/ci.yml/badge.svg)](https://github.com/AdamDiStefanoAI/mcp-scanner/actions/workflows/ci.yml)
 
@@ -17,14 +17,14 @@ MCP-Scanner is a fast, dependency-light static check you run before you trust a 
 
 ```bash
 # No install (uv)
-uvx --from mcp-scanner mcp-scan path/to/config.json
+uvx --from runtime-mcp-scanner mcp-scan path/to/config.json
 
 # Or with pipx
-pipx install mcp-scanner
+pipx install runtime-mcp-scanner
 mcp-scan path/to/server.py
 
 # Or plain pip
-pip install mcp-scanner
+pip install runtime-mcp-scanner
 ```
 
 Point it at client configs (Claude Desktop, Cursor, VS Code, Claude Code), Python servers (FastMCP and the low-level SDK), or TypeScript servers (`@modelcontextprotocol/sdk`). Directories are scanned recursively. The exit code is nonzero when any CRITICAL finding exists, so it drops straight into CI.
@@ -219,7 +219,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: AdamDiStefanoAI/mcp-scanner@v0.1.0
+      - uses: AdamDiStefanoAI/MCP-Scanner@v0.1.1
         with:
           targets: "mcp/ examples/"
 ```
@@ -230,7 +230,7 @@ For SARIF upload to GitHub code scanning, run the CLI directly:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install mcp-scanner
+      - run: pip install runtime-mcp-scanner
       - run: mcp-scan servers/ --format sarif > results.sarif
         continue-on-error: true
       - uses: github/codeql-action/upload-sarif@v3

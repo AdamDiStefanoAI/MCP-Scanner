@@ -21,7 +21,7 @@ inputs:
   version:
     description: "mcp-scanner version to install from PyPI"
     required: false
-    default: "0.1.0"
+    default: "0.1.1"
 
 outputs:
   exit-code:
@@ -38,7 +38,7 @@ runs:
 
     - name: Install MCP-Scanner
       shell: bash
-      run: pip install "mcp-scanner==${{ inputs.version }}"
+      run: pip install "runtime-mcp-scanner==${{ inputs.version }}"
 
     - name: Run MCP-Scanner
       id: scan
