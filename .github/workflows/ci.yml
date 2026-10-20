@@ -26,7 +26,7 @@ jobs:
         run: pytest -q
       - name: Build distribution
         run: python -m build
-      - name: Dogfood: scan the examples
+      - name: "Dogfood: scan the examples"
         run: |
           mcp-scan examples/safe_server.py
           ! mcp-scan examples/vulnerable_server.py
