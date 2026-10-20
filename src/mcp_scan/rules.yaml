@@ -1,0 +1,178 @@
+# MCP-Scanner rule pack.
+# Severities, explanations and fixes live here so they can be tuned
+# without touching scanner code. Detection hints used by the engines
+# are under the "detection" key at the bottom.
+
+rules:
+  - id: MCP-001
+    name: Shell execution exposed
+    severity: CRITICAL
+    why: >-
+      A tool that runs shell commands gives anyone who can steer the agent,
+      including content injected into its context, arbitrary code execution
+      on the host machine.
+    fix: >-
+      Remove shell execution from the tool surface. Replace it with a fixed
+      allowlist of specific operations that take validated, typed arguments.
+
+  - id: MCP-002
+    name: Exfiltration path (network fetch plus file write)
+    severity: CRITICAL
+    why: >-
+      One server that can both read local files or fetch network resources
+      and write or send data out is a complete exfiltration channel. Prompt
+      injection only has to convince the agent to use tools that already
+      exist.
+    fix: >-
+      Split network access and file writes into separate servers with least
+      privilege, and put an egress allowlist in front of any fetch tool.
+
+  - id: MCP-003
+    name: Unscoped filesystem access
+    severity: HIGH
+    why: >-
+      A file tool that takes a raw path from tool input can read or overwrite
+      anything the server process can reach: home directories, SSH keys,
+      cloud credentials, other projects.
+    fix: >-
+      Pin file tools to an explicit root directory and reject any resolved
+      path that escapes it (resolve the path, then check the prefix).
+
+  - id: MCP-004
+    name: Secret access
+    severity: HIGH
+    why: >-
+      Tools or configs that expose environment variables, credential files,
+      or the cloud metadata endpoint hand live secrets to the model context,
+      where they can be logged, leaked, or exfiltrated.
+    fix: >-
+      Never expose raw environment or credential stores as tool output.
+      Scope credentials per server, inject only what that server needs,
+      and block the link-local metadata address at the network layer.
+
+  - id: MCP-005
+    name: Network transport without authentication
+    severity: HIGH
+    why: >-
+      An MCP server listening on HTTP or SSE with no authentication lets
+      anyone who can reach the port call its tools directly, no agent
+      required.
+    fix: >-
+      Require an Authorization header or token check on every request, bind
+      to localhost when remote access is not needed, and put the server
+      behind a gateway that authenticates callers.
+
+  - id: MCP-006
+    name: Mutating tool with no input schema
+    severity: MEDIUM
+    why: >-
+      A write, delete, or execute tool with an empty input schema accepts
+      arbitrary arguments with no validation layer between the model and
+      the action.
+    fix: >-
+      Give every mutating tool a strict input schema with typed, bounded
+      fields, and validate arguments server-side before acting on them.
+
+  - id: MCP-007
+    name: Overbroad tool description
+    severity: MEDIUM
+    why: >-
+      Tool descriptions are instructions to the model. Descriptions that
+      advertise unrestricted capability ("run any command", "access all
+      files") teach the agent to use the tool as a general escape hatch
+      and are a hallmark of malicious MCP packages.
+    fix: >-
+      Describe exactly what the tool does, what it may touch, and what it
+      must never do. Treat description text as part of your attack surface.
+
+  - id: MCP-008
+    name: Self-modifying server
+    severity: MEDIUM
+    why: >-
+      A tool that can rewrite MCP client configs or install new packages
+      can persist itself, add new malicious servers, and survive removal
+      of the original package.
+    fix: >-
+      MCP servers must never write to client configuration files or invoke
+      package managers. Keep config changes manual and reviewable.
+
+  - id: MCP-009
+    name: Package provenance risk
+    severity: HIGH
+    why: >-
+      Auto-installing an unpinned or lookalike package name hands your
+      machine to whoever controls that package. Attackers register
+      near-miss names of popular MCP servers and wait for a typo.
+    fix: >-
+      Pin exact versions, verify the package name character by character
+      against the publisher's documentation, and avoid -y auto-confirm
+      flags in committed configs.
+
+  - id: MCP-010
+    name: Dynamic code execution
+    severity: HIGH
+    why: >-
+      eval, exec, and dynamic imports inside a tool handler turn any string
+      the model produces into running code, bypassing every other control
+      in the server.
+    fix: >-
+      Remove dynamic evaluation from tool handlers. Replace it with a
+      dispatch table of named, audited operations.
+
+detection:
+  shell_commands:
+    - bash
+    - sh
+    - zsh
+    - fish
+    - powershell
+    - pwsh
+    - cmd
+    - cmd.exe
+  overbroad_phrases:
+    - anything
+    - full access
+    - full system access
+    - complete access
+    - unrestricted
+    - any command
+    - all files
+    - no restrictions
+    - any file
+    - arbitrary command
+  metadata_endpoints:
+    - "169.254.169.254"
+  secret_path_fragments:
+    - ".ssh"
+    - ".aws"
+    - ".env"
+    - "id_rsa"
+    - ".gnupg"
+    - ".kube/config"
+  config_file_fragments:
+    - "claude_desktop_config.json"
+    - ".claude/mcp.json"
+    - "mcp.json"
+  known_packages:
+    - "@modelcontextprotocol/server-filesystem"
+    - "@modelcontextprotocol/server-github"
+    - "@modelcontextprotocol/server-gitlab"
+    - "@modelcontextprotocol/server-postgres"
+    - "@modelcontextprotocol/server-sqlite"
+    - "@modelcontextprotocol/server-memory"
+    - "@modelcontextprotocol/server-sequential-thinking"
+    - "@modelcontextprotocol/server-everything"
+    - "@modelcontextprotocol/server-fetch"
+    - "@modelcontextprotocol/server-brave-search"
+    - "@modelcontextprotocol/server-google-maps"
+    - "@modelcontextprotocol/server-puppeteer"
+    - "@modelcontextprotocol/server-slack"
+    - "@modelcontextprotocol/server-gdrive"
+    - "@modelcontextprotocol/server-redis"
+    - "@modelcontextprotocol/server-time"
+    - "mcp-server-sqlite"
+    - "mcp-server-fetch"
+    - "mcp-server-git"
+    - "mcp-server-time"
+    - "mcp-server-github"
+    - "mcp-server-postgres"
