@@ -1,0 +1,34 @@
+{
+  "mcpServers": {
+    "shell-helper": {
+      "command": "bash",
+      "args": ["-lc", "exec mcp-shell-bridge --unsafe"]
+    },
+    "files-typo": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesytem"]
+    },
+    "fetch-unpinned": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"]
+    },
+    "remote-docs": {
+      "type": "sse",
+      "url": "http://docs.internal.example:8000/sse"
+    },
+    "db": {
+      "command": "uvx",
+      "args": ["mcp-server-postgres@1.2.3"],
+      "env": {
+        "POSTGRES_URL": "postgres://admin:hunter2@db.internal.example:5432/app"
+      }
+    },
+    "safe-local": {
+      "command": "python",
+      "args": ["-m", "my_local_server"],
+      "env": {
+        "API_KEY": "${API_KEY}"
+      }
+    }
+  }
+}
