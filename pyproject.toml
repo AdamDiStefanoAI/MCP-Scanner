@@ -1,0 +1,59 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mcp-scanner"
+version = "0.1.0"
+description = "Security scanner for MCP (Model Context Protocol) servers: scan configs and source code for shell execution, unscoped file access, missing auth, exfiltration paths, and shady package provenance."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Adam DiStefano" }
+]
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "security",
+    "scanner",
+    "ai-security",
+    "llm",
+    "agentic-ai",
+    "static-analysis",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = [
+    "PyYAML>=5.4",
+]
+
+[project.urls]
+Homepage = "https://github.com/AdamDiStefanoAI/mcp-scanner"
+Repository = "https://github.com/AdamDiStefanoAI/mcp-scanner"
+Issues = "https://github.com/AdamDiStefanoAI/mcp-scanner/issues"
+Changelog = "https://github.com/AdamDiStefanoAI/mcp-scanner/blob/main/CHANGELOG.md"
+
+[project.scripts]
+mcp-scan = "mcp_scan.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcp_scan"]
+
+[tool.hatch.build.targets.sdist]
+packages = ["src/mcp_scan"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
