@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "local": {
+      "command": "python",
+      "args": ["-m", "company_server"]
+    },
+    "remote": {
+      "url": "https://mcp.example.com/sse",
+      "headers": {
+        "Authorization": "Bearer ${MCP_TOKEN}"
+      }
+    }
+  }
+}
