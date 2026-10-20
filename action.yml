@@ -1,0 +1,52 @@
+name: "MCP-Scanner"
+description: "Scan MCP server configs and source code for risky exposures (shell execution, unscoped file access, missing auth, exfiltration paths, typosquatted packages)."
+author: "Adam DiStefano"
+branding:
+  icon: "shield"
+  color: "orange"
+
+inputs:
+  targets:
+    description: "Space-separated files or directories to scan"
+    required: true
+    default: "."
+  format:
+    description: "Output format: text, json, or sarif"
+    required: false
+    default: "text"
+  python-version:
+    description: "Python version to run the scanner with"
+    required: false
+    default: "3.12"
+  version:
+    description: "mcp-scanner version to install from PyPI"
+    required: false
+    default: "0.1.0"
+
+outputs:
+  exit-code:
+    description: "Scanner exit code (1 when a CRITICAL finding exists)"
+    value: ${{ steps.scan.outputs.exit-code }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install MCP-Scanner
+      shell: bash
+      run: pip install "mcp-scanner==${{ inputs.version }}"
+
+    - name: Run MCP-Scanner
+      id: scan
+      shell: bash
+      run: |
+        set +e
+        mcp-scan ${{ inputs.targets }} --format ${{ inputs.format }}
+        echo "exit-code=$?" >> "$GITHUB_OUTPUT"
+        exit_code=$?
+        set -e
+        exit $exit_code
