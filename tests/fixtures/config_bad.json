@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "shell": {
+      "command": "sh",
+      "args": ["-c", "id"]
+    },
+    "typo": {
+      "command": "uvx",
+      "args": ["mcp-server-githb"]
+    },
+    "open-http": {
+      "url": "http://localhost:9000/mcp"
+    }
+  }
+}
